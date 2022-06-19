@@ -124,6 +124,7 @@ tqdm==4.61.0
 traitlets==5.0.5
 typing-extensions==3.7.4.3
 urllib3==1.26.4
+weave==0.17.0
 Wand==0.6.6
 wcwidth==0.2.5
 webencodings==0.5.1
