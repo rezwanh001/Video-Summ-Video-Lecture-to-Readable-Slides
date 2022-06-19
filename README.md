@@ -5,7 +5,8 @@
 
 ```python
 Version: 0.0.1  
-Author : Md. Rezwanul Haque
+Author : Md. Rezwanul Haque,
+         Asaf-uddowla Golap
 ```
 ### **Related resources**:
 
