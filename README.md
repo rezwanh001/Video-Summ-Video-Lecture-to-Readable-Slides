@@ -13,11 +13,11 @@ Author : Md. Rezwanul Haque,
 
 **LOCAL ENVIRONMENT**  
 ```python
-OS          : Ubuntu 20.04.3 LTS       
-Memory      : 7.7 GiB 
+OS          : Ubuntu 22.04 LTS       
+Memory      : 8.0 GiB 
 Processor   : Intel® Core™ i5-5200U CPU @ 2.20GHz × 4    
 Graphics    : AMD® Radeon r5 m255 / Mesa Intel® HD Graphics 5500 (BDW GT2)  
-Gnome       : 3.36.8 
+Gnome       : 42.1 
 ```
 
 **python requirements**
