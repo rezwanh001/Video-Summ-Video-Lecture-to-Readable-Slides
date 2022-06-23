@@ -1,3 +1,8 @@
+"""
+@author: Md. Rezwanul Haque
+
+"""
+
 class CONFIG:
     # ============ TRAIN CONFIG ==============
     # Dataset options
