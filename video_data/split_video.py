@@ -15,7 +15,7 @@ def splitVideo(args):
         args:
             video_data  :       source path of video file (.mp4) 
             split_videos:       destination path of processed chunk video files (.mp4)
-            times       :       path of times.txt file which is included 'start-time' and 'end-time' in seconds.
+            
         returns:
             splited videos into the destination folder 
         
