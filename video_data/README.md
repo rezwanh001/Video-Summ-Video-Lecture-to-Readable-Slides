@@ -3,11 +3,14 @@
 
 - Folder format:
     -anatomy_videos
-        |- video_1.mp4
-        |- video_1.txt
+        |-- video_1.mp4
+        |-- video_1.txt
         ...
-        |- video_10.mp4
-        |- video_10.txt
+        |-- video_10.mp4
+        |-- video_10.txt
+
+
+
 
 - Execution:
 
