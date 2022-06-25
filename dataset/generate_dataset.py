@@ -31,14 +31,15 @@ class Generate_Dataset:
             4. User Summary ( for evaluation )
 
     """
-    def __init__(self, video_path, save_path, frame_dir, train_data):
-        self.resnet = ResNet()
-        self.dataset = {}
-        self.video_list = []
-        self.video_path = ''
-        self.h5_file = h5py.File(save_path, 'w') 
-        self.frame_root_path = frame_dir
-        self.train_data = train_data
+    def __init__(self, video_path, save_path, frame_dir, train_data, is_separate):
+        self.resnet             =   ResNet()
+        self.dataset            =   {}
+        self.video_list         =   []
+        self.video_path         =   ''
+        self.h5_file            =   h5py.File(save_path, 'w') 
+        self.frame_root_path    =   frame_dir
+        self.train_data         =   train_data
+        self.is_separate        =   is_separate
 
         self._set_video_list(video_path)
 
@@ -52,8 +53,7 @@ class Generate_Dataset:
             self.video_list.append(video_path)
 
         for idx, file_name in enumerate(self.video_list):
-            LOG_INFO("LIST OF VIDEOS IS BELLOW: ")
-            LOG_INFO(file_name)
+            LOG_INFO('LIST OF VIDEOS: {}'.format(file_name))
             self.dataset['video_{}'.format(idx+1)] = {}
             self.h5_file.create_group('video_{}'.format(idx+1))
 
@@ -97,7 +97,7 @@ class Generate_Dataset:
         
         temp_n_frame_per_seg = []
         for change_points_idx in range(len(change_points)):
-            n_frame = 1 # we choose only one frame
+            n_frame = 1 # we choose only one frame per segment or every change points
             temp_n_frame_per_seg.append(n_frame)
         n_frame_per_seg = np.array(list(temp_n_frame_per_seg))
 
@@ -137,7 +137,7 @@ class Generate_Dataset:
             fps = video_capture.get(cv2.CAP_PROP_FPS)
             n_frames = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
 
-            frame_list = []
+            frame_list = {}
             picks = []
             video_feat = None
             video_feat_for_train = None
@@ -159,6 +159,9 @@ class Generate_Dataset:
                     else:
                         video_feat = np.vstack((video_feat, frame_feat))
 
+                    ## load frame w.r.t frame_idx
+                    frame_list[frame_idx] = frame
+
                     if self.train_data:
                         # this is for frames extraction
                         img_filename = "{}.jpg".format(str(frame_idx).zfill(6))
@@ -173,15 +176,15 @@ class Generate_Dataset:
 
             change_points, n_frame_per_seg = self._get_change_points(video_feat, n_frames, fps, plot_fig)
             
-            if self.train_data:
+            if self.train_data and self.is_separate:
                 ### Seperate the selected frames after applying KTS algo.
                 train_data_frames_dir = create_dir(self.frame_root_path, video_basename)
-                LOG_INFO('TR DATA FRM: {}'.format(train_data_frames_dir))
+                # LOG_INFO('TR DATA FRM: {}'.format(train_data_frames_dir))
                 
                 src_dir = train_data_frames_dir
                 ext = "separate_"+train_data_frames_dir.split("/")[-1]
                 dest_path=create_dir(train_data_frames_dir,ext)
-                LOG_INFO('SEP TR DATA FRM: {}'.format(dest_path))
+                # LOG_INFO('SEP TR DATA FRM: {}'.format(dest_path))
                 
                 for jpgfile in glob.iglob(os.path.join(src_dir, "*.jpg")):
                     _file_name = jpgfile.split("/")[-1]
@@ -189,6 +192,23 @@ class Generate_Dataset:
         
                     if int(file_num) in change_points:
                         shutil.copy2(jpgfile, dest_path)
+
+            if self.is_separate:
+                ### Seperate the selected frames after applying KTS algo.
+                LOG_INFO("SEPARATE CPD POINT FRAMES.")
+                train_data_frames_dir = create_dir(self.frame_root_path, video_basename)
+                # LOG_INFO('TR DATA FRM: {}'.format(train_data_frames_dir))
+                
+                src_dir = train_data_frames_dir
+                ext = "separate_"+train_data_frames_dir.split("/")[-1]
+                dest_path=create_dir(train_data_frames_dir,ext)
+                # LOG_INFO('SEP TR DATA FRM: {}'.format(dest_path))
+
+                for frame_idx in tqdm(frame_list.keys()):
+                    if frame_idx in change_points:
+                        frame = frame_list[frame_idx]
+                        img_filename = "{}.jpg".format(str(frame_idx).zfill(6))
+                        cv2.imwrite(os.path.join(dest_path, img_filename), frame)
 
             ## Save Dataset
             self._save_dataset(video_idx, video_feat_for_train, picks, n_frames, fps, video_filename, change_points, n_frame_per_seg)
