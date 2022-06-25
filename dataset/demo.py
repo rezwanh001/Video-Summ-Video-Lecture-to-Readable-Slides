@@ -12,8 +12,6 @@
 #---------------------------------------------------------------
 import numpy as np
 from tqdm import tqdm
-import math
-import cv2
 import matplotlib.pyplot as plt
 from KTS.cpd_nonlin import cpd_nonlin
 from KTS.cpd_auto import cpd_auto
@@ -50,7 +48,7 @@ def gen_data(n, m, d=1):
 if __name__ == "__main__":
     plt.ioff()
     # ===============================================================
-    print ("Test 1: 1-dimensional signal")
+    LOG_INFO ("Test 1: 1-dimensional signal")
     plt.figure("Test 1: 1-dimensional signal")
     n = 1000
     m = 10
@@ -68,7 +66,7 @@ if __name__ == "__main__":
     print ("="*79)
 
     # ===============================================================
-    print ("Test 2: multidimensional signal")
+    LOG_INFO ("Test 2: multidimensional signal")
     plt.figure("Test 2: multidimensional signal")
     n = 1000
     m = 20
@@ -86,7 +84,7 @@ if __name__ == "__main__":
     print ("="*79)
 
     # ===============================================================
-    print ("Test 3: automatic selection of the number of change-points")
+    LOG_INFO ("Test 3: automatic selection of the number of change-points")
     plt.figure("Test 3: automatic selection of the number of change-points")
     (X, cps_gt) = gen_data(n, m)
     print ("Ground truth: (m=%d)" % m, cps_gt)
@@ -103,7 +101,7 @@ if __name__ == "__main__":
 
 
     ###=====================================================================
-    print ("Test 4: Frames: automatic selection of the number of change-points")
+    LOG_INFO ("Test 4: Frames: automatic selection of the number of change-points")
     # plt.figure("Test 4: Frames: automatic selection of the number of change-points")
 
     video_path = CONFIG.VIDEO_PATH 
@@ -111,7 +109,8 @@ if __name__ == "__main__":
     frame_dir = CONFIG.FRAME_DIR 
     train_data = CONFIG.TRAIN_DATA ### flag: this is for extraction frames 
     plot_fig = CONFIG.PLOT_FIG
-    gen = Generate_Dataset(video_path, output_path,frame_dir, train_data)
+    is_separate = CONFIG.IS_SEPARATE
+    gen = Generate_Dataset(video_path, output_path,frame_dir, train_data, is_separate)
     gen.generate_dataset(plot_fig)
     gen.h5_file.close()
-    LOG_INFO("="*79)
+    print ("="*79)
