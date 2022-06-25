@@ -8,7 +8,6 @@
 import torch.nn as nn
 from torchvision import transforms, models
 from torch.autograd import Variable
-import torch.backends.cudnn as cudnn
 import os 
 import torch
 from .config import CONFIG
